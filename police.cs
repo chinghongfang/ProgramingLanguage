@@ -6,8 +6,9 @@ public class police : MonoBehaviour {
 		
 		float crouching = 1f;
 		float runtimer = 2f;
-		float runtime = 2f;
-		float bending = 0f;
+		float opentimer = 3f;
+		public float opentime = 2f;
+		public float runtime = 2f;
 		public float movespeed = 0.05f;
 		public float mouseSensitivity = 1f;
 		public GameObject head;
@@ -76,89 +77,66 @@ public class police : MonoBehaviour {
 		}
 		if (crouching<1f){
 			crouching += Time.deltaTime;
-			Vector3 v = transform.GetChild(0).localRotation.eulerAngles;
-			v.x += 0.8f;
-			transform.GetChild(0).localRotation = Quaternion.Euler(v);
+			transform.GetChild(0).localRotation *= Quaternion.Euler(Time.deltaTime*40f,0f,0f);
 			
-			v = transform.GetChild(0).GetChild(2).localRotation.eulerAngles;
-			v.x -= 1f;
-			transform.GetChild(0).GetChild(2).localRotation = Quaternion.Euler(v);
-			transform.GetChild(0).GetChild(3).localRotation = Quaternion.Euler(v);
+			transform.GetChild(0).GetChild(2).localRotation *= Quaternion.Euler(-Time.deltaTime*50f,0f,0f);
+			transform.GetChild(0).GetChild(3).localRotation *= Quaternion.Euler(-Time.deltaTime*50f,0f,0f);
 			
-			v = transform.GetChild(1).localRotation.eulerAngles;
-			v.x -= 1f;
-			transform.GetChild(1).localRotation = Quaternion.Euler(v);
-			transform.GetChild(2).localRotation = Quaternion.Euler(v);
+			transform.GetChild(1).localRotation *= Quaternion.Euler(-Time.deltaTime*50f,0f,0f);
+			transform.GetChild(2).localRotation *= Quaternion.Euler(-Time.deltaTime*50f,0f,0f);
 			
-			v = transform.GetChild(1).GetChild(1).localRotation.eulerAngles;
-			bending += 2.5f;
-			v.x = bending;
-			transform.GetChild(1).GetChild(1).localRotation = Quaternion.Euler(v);
-			transform.GetChild(2).GetChild(1).localRotation = Quaternion.Euler(v);
+			transform.GetChild(1).GetChild(1).localRotation *= Quaternion.Euler(Time.deltaTime*140f,0f,0f);
+			transform.GetChild(2).GetChild(1).localRotation *= Quaternion.Euler(Time.deltaTime*140f,0f,0f);
 		}else {crouching = 2f;}
 		if (Input.GetKeyDown("x")){
-			bending = 0f;
 			movespeed = 0.05f;
 			stand();
+		}
+		if (Input.GetKeyDown("f")){
+			if (opentimer == (opentime+1)) opentimer = 0;
+		}
+		if (opentimer<(opentime/2)){
+			opentimer += Time.deltaTime;
+			transform.GetChild(0).GetChild(2).localRotation *= Quaternion.Euler(-Time.deltaTime*40f/opentime,0f,0f);
+			transform.GetChild(0).GetChild(2).GetChild(1).localRotation *= 
+					Quaternion.Euler(-Time.deltaTime*100f/opentime,0f,0f);
+		}else if(opentimer<opentime){
+			opentimer += Time.deltaTime;
+			transform.GetChild(0).GetChild(2).localRotation *= Quaternion.Euler(-Time.deltaTime*50f/opentime,0f,0f);
+			transform.GetChild(0).GetChild(2).GetChild(1).localRotation *= 
+					Quaternion.Euler(Time.deltaTime*100f/opentime,0f,0f);
+		}else if (opentimer > opentime && opentimer < (opentime+0.5f)){
+			opentimer = opentime+1;
+			transform.GetChild(0).GetChild(2).localRotation = Quaternion.Euler(0f,0f,0f);
+			transform.GetChild(0).GetChild(2).GetChild(1).localRotation = Quaternion.Euler(-20,0f,0f);
 		}
 		
 	}
 
 	void run(){
 		runtimer += Time.deltaTime;
-		if (runtimer<1){
-			Vector3 v = transform.GetChild(0).GetChild(2).localRotation.eulerAngles;
-			v.x += 2f;
-			transform.GetChild(0).GetChild(2).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(0).GetChild(2).GetChild(1).localRotation.eulerAngles;
-			v.x += Time.deltaTime*40f;
-			transform.GetChild(0).GetChild(2).GetChild(1).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(0).GetChild(3).localRotation.eulerAngles;
-			v.x -= 2f;
-			transform.GetChild(0).GetChild(3).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(0).GetChild(3).GetChild(1).localRotation.eulerAngles;
-			v.x -= Time.deltaTime*40f;
-			transform.GetChild(0).GetChild(3).GetChild(1).localRotation = Quaternion.Euler(v);
+		if (runtimer<(runtime/2)){
+			transform.GetChild(0).GetChild(2).localRotation *= Quaternion.Euler(Time.deltaTime*200f/runtime,0f,0f);
+			transform.GetChild(0).GetChild(2).GetChild(1).localRotation *= Quaternion.Euler(Time.deltaTime*80f/runtime,0f,0f);
+			transform.GetChild(0).GetChild(3).localRotation *= Quaternion.Euler(-Time.deltaTime*200f/runtime,0f,0f);
+			transform.GetChild(0).GetChild(3).GetChild(1).localRotation *= Quaternion.Euler(-Time.deltaTime*80f/runtime,0f,0f);
 			
-			v = transform.GetChild(1).localRotation.eulerAngles;
-			v.x += Time.deltaTime*80f;
-			transform.GetChild(1).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(1).GetChild(1).localRotation.eulerAngles;
-			v.x -= Time.deltaTime*70f;
-			transform.GetChild(1).GetChild(1).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(2).localRotation.eulerAngles;
-			v.x -= Time.deltaTime*80f;
-			transform.GetChild(2).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(2).GetChild(1).localRotation.eulerAngles;
-			v.x += Time.deltaTime*70f;
-			transform.GetChild(2).GetChild(1).localRotation = Quaternion.Euler(v);
+			transform.GetChild(1).localRotation *= Quaternion.Euler(Time.deltaTime*160f/runtime,0f,0f);
+			transform.GetChild(1).GetChild(1).localRotation *= Quaternion.Euler(-Time.deltaTime*140f/runtime,0f,0f);
+			transform.GetChild(2).localRotation *= Quaternion.Euler(-Time.deltaTime*160f/runtime,0f,0f);
+			transform.GetChild(2).GetChild(1).localRotation *= Quaternion.Euler(Time.deltaTime*140f/runtime,0f,0f);
 		}else if(runtimer<runtime){
-			Vector3 v = transform.GetChild(0).GetChild(2).localRotation.eulerAngles;
-			v.x -= 2f;
-			transform.GetChild(0).GetChild(2).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(0).GetChild(2).GetChild(1).localRotation.eulerAngles;
-			v.x -= Time.deltaTime*40f;
-			transform.GetChild(0).GetChild(2).GetChild(1).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(0).GetChild(3).localRotation.eulerAngles;
-			v.x += 2f;
-			transform.GetChild(0).GetChild(3).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(0).GetChild(3).GetChild(1).localRotation.eulerAngles;
-			v.x += Time.deltaTime*40f;
-			transform.GetChild(0).GetChild(3).GetChild(1).localRotation = Quaternion.Euler(v);
+			transform.GetChild(0).GetChild(2).localRotation *= Quaternion.Euler(-Time.deltaTime*200f/runtime,0f,0f);
+			transform.GetChild(0).GetChild(2).GetChild(1).localRotation *= Quaternion.Euler(-Time.deltaTime*80f/runtime,0f,0f);
+			transform.GetChild(0).GetChild(3).localRotation *= Quaternion.Euler(Time.deltaTime*200f/runtime,0f,0f);
+			transform.GetChild(0).GetChild(3).GetChild(1).localRotation *= Quaternion.Euler(Time.deltaTime*80f/runtime,0f,0f);
 			
-			v = transform.GetChild(1).localRotation.eulerAngles;
-			v.x -= Time.deltaTime*80f;
-			transform.GetChild(1).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(1).GetChild(1).localRotation.eulerAngles;
-			v.x += Time.deltaTime*70f;
-			transform.GetChild(1).GetChild(1).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(2).localRotation.eulerAngles;
-			v.x += Time.deltaTime*80f;
-			transform.GetChild(2).localRotation = Quaternion.Euler(v);
-			v = transform.GetChild(2).GetChild(1).localRotation.eulerAngles;
-			v.x -= Time.deltaTime*70f;
-			transform.GetChild(2).GetChild(1).localRotation = Quaternion.Euler(v);
+			transform.GetChild(1).localRotation *= Quaternion.Euler(-Time.deltaTime*160f/runtime,0f,0f);
+			transform.GetChild(1).GetChild(1).localRotation *= Quaternion.Euler(Time.deltaTime*140f/runtime,0f,0f);
+			transform.GetChild(2).localRotation *= Quaternion.Euler(Time.deltaTime*160f/runtime,0f,0f);
+			transform.GetChild(2).GetChild(1).localRotation *= Quaternion.Euler(-Time.deltaTime*140f/runtime,0f,0f);
 		}else{
+			transform.GetComponent<AudioSource>().Play();
 			transform.GetChild(0).GetChild(2).localRotation = Quaternion.Euler(-60,0,0);
 			transform.GetChild(0).GetChild(2).GetChild(1).localRotation = Quaternion.Euler(-70,0,0);
 			transform.GetChild(0).GetChild(3).localRotation = Quaternion.Euler(40,0,0);
